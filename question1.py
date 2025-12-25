@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 n=30
 p=2/3
+N=100000
 
 def generate_Ui(p):
     return 1 if random.random() < p else 0
@@ -17,23 +18,16 @@ def generate_Xn(n, p):
         Xn += generate_Ui(p)/2**(i+1)
     return Xn
 
-def CDFapprox(x, n, p, N):
-    F = 0
-    for i in range(N):
-        Xn = indicator(generate_Xn(n,p),x)
-        F+=Xn
-    F=F/N
-    return F
+samples = np.array([generate_Xn(n, p) for _ in range(N)])
 
-xs = np.linspace(0, 1, 20)
+Xs = np.sort(samples)
+Ys = np.arange(1, N+1) / N
 
-N = 10000
-Fs = [CDFapprox(x, n, p, N) for x in xs]
 
-plt.plot(xs, Fs)
-plt.xlabel("x")
-plt.ylabel(r"$\hat{F}(x)$")
-plt.ylim(0, 1)
+plt.step(Xs, Ys, where="post")
 plt.xlim(0, 1)
-plt.grid(True)
+plt.ylim(0, 1)
+plt.xlabel("x")
+plt.ylabel(r"$\hat F(x)$")
+plt.grid(True, alpha=0.3)
 plt.show()
